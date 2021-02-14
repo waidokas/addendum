@@ -1,0 +1,21 @@
+<mvc:View controllerName="app.gydrez.controller.App"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc" displayBlock="true">
+	<Shell>
+		<App>
+			<pages>
+				<Page title="{i18n>appTitle}">
+					<customHeader>
+						<!-- <f:ShellBar core:require="{ Helper: 'app/gydrez/util/Helper' }" title="{i18n>TITLE}" homeIcon="{:= Helper.resolvePath('./img/logo.jpeg') }" /> -->
+					</customHeader>
+					<headerContent>
+						<Button icon="sap-icon://hello-world"/>
+					</headerContent>
+					<content>
+						<mvc:XMLView viewName="app.gydrez.view.RegistrationPanel"/>
+					</content>
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>

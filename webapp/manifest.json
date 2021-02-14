@@ -1,0 +1,73 @@
+{
+	"_version": "0.0.1",
+	"sap.app": {
+		"id": "app.gydrez",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				"lt", "en"
+			],
+			"fallbackLocale": ""
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"dataSources": {
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "app.gydrez.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.60",
+			"libs": {
+				"sap.m": {}
+			}
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "app.gydrez.i18n.i18n",
+					"supportedLocales": [
+						"lt", "en"
+					],
+					"fallbackLocale": ""
+				}
+			}
+		},
+		"config": {
+			"sample": {
+				"files": [
+					"Page.view.xml",
+					"Page.controller.js",
+					"Create.fragment.xml",
+					"Details.fragment.xml",
+					"manifest.json"
+				]
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/styles.css"
+				}
+			]
+		}
+	}
+}
