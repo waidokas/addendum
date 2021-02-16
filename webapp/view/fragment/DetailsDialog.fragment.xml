@@ -3,10 +3,10 @@
 		xmlns:f="sap.ui.layout.form"
 		xmlns:core="sap.ui.core">
 	<ResponsivePopover
-			id="detailsPopover"
+			id="detailsDialog"
 			title="{title}"
 			class="sapUiPopupWithPadding"
-			placement="Auto">
+			placement="Auto"> 
 		<beginButton>
 			<Button text="Edit" type="Emphasized" press="handleEditButton"/>
 		</beginButton>
@@ -17,8 +17,8 @@
 				editable="false"
 				layout="ResponsiveGridLayout"
 				singleContainerFullSize="false">
-			<Label text="Additional information" labelFor="moreInfoText"/>
-			<Text id="moreInfoText" text="{info}"/>
+			<Label text="Additional information" labelFor="procedureText"/>
+			<Text id="procedureText" text="{info}"/>
 			<Label text="From" labelFor="startDateText"/>
 			<Text id="startDateText" text="{path: 'start', formatter: '.formatDate'}"/>
 			<Label text="To" labelFor="endDateText"/>

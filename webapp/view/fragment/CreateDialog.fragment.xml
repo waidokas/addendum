@@ -1,0 +1,32 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m">
+	<Dialog id="createDialog">
+		<beginButton>
+			<Button text="Save" type="Emphasized" press="handleDialogSaveButton"/>
+		</beginButton>
+		<endButton>
+			<Button text="Cancel" press=".onCloseDialog"/>
+		</endButton>
+		<l:VerticalLayout class="sapUiContentPadding" width="100%">
+			<Label text="Select doctor: " labelFor="selectDoctor"/>
+			<Select id="selectDoctor" forceSelection="false" change="handleChangeSelect" width="100%" items="{
+						path: '/people'
+					}">
+				<core:Item key="{name}" text="{name}"/>
+			</Select>
+			<Label text="Patient Name: " labelFor="inputProcedure"/>
+			<Input id="inputProcedure" required="true" />
+			<Label text="Procedure: " labelFor="procedure"/>
+			<Input id="procedure"  liveChange = "onLiveChange"
+			required="true" value="{
+							type: 'sap.ui.model.type.String',
+							constraints : {minLength : 2, maxLength : 100}
+						}" />
+			<Label text="Start date: " labelFor="startDate"/>
+			<DateTimePicker id="startDate" displayFormat="short" required="true" change="handleCreateChange"/>
+			<Label text="End date: " labelFor="endDate"/>
+			<DateTimePicker id="endDate" displayFormat="short" required="true" change="handleCreateChange"/>
+		</l:VerticalLayout>
+	</Dialog>
+</core:FragmentDefinition>

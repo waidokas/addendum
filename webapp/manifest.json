@@ -1,22 +1,22 @@
 {
-	"_version": "0.0.1",
+	"_version": "1.31.0",
 	"sap.app": {
-		"id": "app.gydrez",
+		"id": "app",
 		"type": "application",
 		"i18n": {
 			"bundleUrl": "i18n/i18n.properties",
 			"supportedLocales": [
-				"lt", "en"
+				"lt",
+				"en"
 			],
 			"fallbackLocale": ""
 		},
-		"title": "{{appTitle}}",
+		"title": "{{appMainTitle}}",
 		"description": "{{appDescription}}",
 		"applicationVersion": {
 			"version": "1.0.0"
 		},
-		"dataSources": {
-		}
+		"dataSources": {}
 	},
 	"sap.ui": {
 		"technology": "UI5",
@@ -28,7 +28,7 @@
 	},
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "app.gydrez.view.App",
+			"viewName": "app.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "app"
@@ -43,9 +43,10 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "app.gydrez.i18n.i18n",
+					"bundleName": "app.i18n.i18n",
 					"supportedLocales": [
-						"lt", "en"
+						"lt",
+						"en"
 					],
 					"fallbackLocale": ""
 				}

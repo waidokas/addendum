@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("app.gydrez.controller.App", {
+	return Controller.extend("app.controller.App", {
 	});
 
 });

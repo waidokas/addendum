@@ -1,18 +1,15 @@
-<mvc:View controllerName="app.gydrez.controller.App"
+<mvc:View controllerName="app.controller.App"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true">
 	<Shell>
 		<App>
 			<pages>
-				<Page title="{i18n>appTitle}">
-					<customHeader>
-						<!-- <f:ShellBar core:require="{ Helper: 'app/gydrez/util/Helper' }" title="{i18n>TITLE}" homeIcon="{:= Helper.resolvePath('./img/logo.jpeg') }" /> -->
-					</customHeader>
+				<Page>
 					<headerContent>
-						<Button icon="sap-icon://hello-world"/>
+						<Button icon="sap-icon://refresh"/>
 					</headerContent>
 					<content>
-						<mvc:XMLView viewName="app.gydrez.view.RegistrationPanel"/>
+						<mvc:XMLView viewName="app.view.Calendar"/>
 					</content>
 				</Page>
 			</pages>

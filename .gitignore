@@ -58,3 +58,9 @@ typings/
 .env
 
 dist/
+
+# local history files
+.history
+
+.vscode
+tmp
