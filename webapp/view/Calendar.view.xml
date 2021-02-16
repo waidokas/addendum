@@ -7,7 +7,7 @@
         <PlanningCalendar
                 id="PC1"
                 startDate="{path: '/startDate'}"
-                rows="{path: '/people'}"
+                rows="{path: '/appointments'}"
                 appointmentsVisualization="Filled"
                 appointmentSelect="handleAppointmentSelect"
                 showEmptyIntervalHeaders="false"
@@ -29,12 +29,9 @@
                     <appointments>
                         <unified:CalendarAppointment
                                 startDate="{path: 'start', formatter:'.dateFormatter'}"
-                                endDate="{path: 'end', formatter:'.dateFormatter'}"
-                                icon="{pic}"
-                                title="{title}"
-                                text="{info}"
-                                type="{type}"
-                                tentative="{tentative}">
+                                endDate="{path: 'end', formatter:'.dateFormatter'}"                                
+                                title="{patient_name}"
+                                text="{procedure}">
                         </unified:CalendarAppointment>
                     </appointments>
                     <intervalHeaders>
@@ -42,8 +39,7 @@
                                 startDate="{start}"
                                 endDate="{end}"
                                 icon="{pic}"
-                                title="{title}"
-                                type="{type}">
+                                title="{title}">
                         </unified:CalendarAppointment>
                     </intervalHeaders>
                 </PlanningCalendarRow>
