@@ -10,8 +10,8 @@
         </endButton>
         <l:VerticalLayout class="sapUiContentPadding" width="100%">
             <Label text="Select doctor: " labelFor="selectDoctor"/>
-            <Select id="selectDoctor" forceSelection="false" change=".onChangeSelect" width="100%" items="{
-                        path: '/appointments'
+            <Select id="selectDoctor" forceSelection="false"  width="100%" items="{
+                        path: '/reservations'
                     }">
                 <core:Item key="{name}" text="{name}"/>
             </Select>

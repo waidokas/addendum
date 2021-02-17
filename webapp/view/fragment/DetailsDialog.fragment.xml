@@ -1,28 +1,20 @@
-<core:FragmentDefinition
-		xmlns="sap.m"
-		xmlns:f="sap.ui.layout.form"
-		xmlns:core="sap.ui.core">
-	<ResponsivePopover
-			id="detailsDialog"
-			title="{title}"
-			class="sapUiPopupWithPadding"
-			placement="Auto"> 
-		<beginButton>
-			<Button text="Edit" type="Emphasized" press="handleEditButton"/>
-		</beginButton>
-		<endButton>
-			<Button text="Delete" press="handleDeleteAppointment"/>
-		</endButton>
-		<f:SimpleForm
-				editable="false"
-				layout="ResponsiveGridLayout"
-				singleContainerFullSize="false">
+<core:FragmentDefinition xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<ResponsivePopover id="detailsDialog" title="{patient_name}" class="sapUiPopupWithPadding" placement="Auto">
+		<f:SimpleForm editable="false" layout="ResponsiveGridLayout" singleContainerFullSize="false">
 			<Label text="Additional information" labelFor="procedureText"/>
-			<Text id="procedureText" text="{info}"/>
+			<Text id="procedureText" text="{procedure}"/>
 			<Label text="From" labelFor="startDateText"/>
 			<Text id="startDateText" text="{path: 'start', formatter: '.formatDate'}"/>
 			<Label text="To" labelFor="endDateText"/>
 			<Text id="endDateText" text="{path: 'end', formatter: '.formatDate'}"/>
 		</f:SimpleForm>
+		<Toolbar>
+			<ToolbarSpacer/>
+			<Button text="Edit" type="Emphasized" press=".onEditAppointment"/>
+			<Button text="Delete" press=".onDeleteAppointment"/>
+			<Button text="Cancel" press=".onCloseDialog"/>
+		</Toolbar>
 	</ResponsivePopover>
 </core:FragmentDefinition>

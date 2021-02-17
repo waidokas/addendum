@@ -23,5 +23,9 @@
 		"karma-ui5": "^2.3.3",
 		"local-web-server": "^4.2.1",
 		"rimraf": "^3.0.2"
+	},
+	"dependencies": {
+		"express": "^4.17.1",
+		"pg": "^8.5.1"
 	}
 }

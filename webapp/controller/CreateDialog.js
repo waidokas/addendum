@@ -3,9 +3,10 @@ sap.ui.define(
 		"sap/ui/base/ManagedObject",
 		"sap/ui/core/library",
 		"sap/ui/core/Fragment",
-		"sap/base/Log",
+        "sap/base/Log",
+        "sap/ui/core/format/DateFormat",
 	],
-	function (ManagedObject, coreLibrary, Fragment, Log) {
+	function (ManagedObject, coreLibrary, Fragment, Log, DateFormat) {
 		"use strict";
 
 		var ValueState = coreLibrary.ValueState;
@@ -13,6 +14,7 @@ sap.ui.define(
 		return ManagedObject.extend("app.controller.CreateDialog", {
 			constructor: function (oView) {
 				this._oView = oView;
+				this.sPath = null;
 			},
 
 			exit: function () {
@@ -46,9 +48,6 @@ sap.ui.define(
 			 * and configures it depending on an operation type
 			 */
 			_openDialog: function (oType, oDialog) {
-				oDialog.attachBrowserEvent("resize", function () {
-					console.log("Resize done");
-				});
 				oDialog._oDialogType = oType;
 				if (oType.type === "edit_appointment") {
 					this._setEditAppointmentDialogContent(oDialog);
@@ -81,26 +80,31 @@ sap.ui.define(
 			},
 
 			_setEditAppointmentDialogContent: function (oDialog) {
-				// 	var oAppointment = oDialog.getModel().getProperty(this.sPath),
-				// 		oSelectedIntervalStart = oAppointment.start,
-				// 		oSelectedIntervalEnd = oAppointment.end,
-				// 		sSelectedProcedure = oAppointment.info,
-				// 		sSelectedPersonName = oAppointment.title,
-				// 		iSelectedDoctorId = this.sPath[this.sPath.indexOf("/people/") + "/people/".length],
-				// 		oDateTimePickerStart = this.byId("startDate"),
-				// 		oDateTimePickerEnd = this.byId("endDate"),
-				// 		oDoctorSelected = this.byId("doctorPerson"),
-				// 		oStartDate = this.byId("startDate"),
-				// 		oEndDate = this.byId("endDate"),
-				// 		oProcedureInput = this.byId("inputProcedure"),
-				// 		oPatientNameInput = this.byId("inputPatientName");
-				// 		oDoctorSelected.setSelectedIndex(iSelectedPersonId);
-				// 	oStartDate.setDateValue(oSelectedIntervalStart);
-				// 	oEndDate.setDateValue(oSelectedIntervalEnd);
-				// 	oMoreInfoInput.setValue(sSelectedInfo);
-				// 	oTitleInput.setValue(sSelectedTitle);
-				// 	oDateTimePickerStart.setValueState(ValueState.None);
-				// 	oDateTimePickerEnd.setValueState(ValueState.None);
+				this.sPath = this._oView.oController.sPath;
+
+				let oAppointment = oDialog.getModel().getProperty(this.sPath),
+					sSelectedIntervalStart = oAppointment.start,
+					sSelectedIntervalEnd = oAppointment.end,
+					sProcedure = oAppointment.procedure,
+					sPatientName = oAppointment.patient_name,
+					iSelectedDoctorId = this.sPath[
+						this.sPath.indexOf("/appointmnetns/") +
+						"/appointmnetns/".length
+					],
+					oDoctorSelected = this._oView.byId("selectDoctor"),
+					oStartDate = this._oView.byId("startDate"),
+					oEndDate = this._oView.byId("endDate"),
+					oProcedureInput = this._oView.byId("inputProcedure"),
+					oPatientNameInput = this._oView.byId("inputPatientName");
+
+				oDoctorSelected.setSelectedIndex(iSelectedDoctorId);
+				oStartDate.setDateValue(new Date(sSelectedIntervalStart));
+				oEndDate.setDateValue(new Date(sSelectedIntervalEnd));
+				oProcedureInput.setValue(sProcedure);
+				oPatientNameInput.setValue(sPatientName);
+
+				oStartDate.setValueState(ValueState.None);
+				oEndDate.setValueState(ValueState.None);
 			},
 
 			onCloseDialog: function () {
@@ -167,14 +171,15 @@ sap.ui.define(
 					oInputPatientName = this._oView.byId("inputPatientName"),
 					oInputProcedure = this._oView.byId("inputProcedure"),
 					bEnabled =
-						oStartDate.getValueState() !== ValueState.Error &&
-						oStartDate.getValue() !== "" &&
-						oEndDate.getValueState() !== ValueState.Error &&
-						oEndDate.getValue() !== "" &&
-						oInputPatientName.getValueState() !== ValueState.Error &&
-						oInputPatientName.getValue() !== "" &&
-						oInputProcedure.getValueState() !== ValueState.Error &&
-						oInputProcedure.getValue() !== "";
+					oStartDate.getValueState() !== ValueState.Error &&
+					oStartDate.getValue() !== "" &&
+					oEndDate.getValueState() !== ValueState.Error &&
+					oEndDate.getValue() !== "" &&
+					oInputPatientName.getValueState() !==
+					ValueState.Error &&
+					oInputPatientName.getValue() !== "" &&
+					oInputProcedure.getValueState() !== ValueState.Error &&
+					oInputProcedure.getValue() !== "";
 				this._oView
 					.byId("createDialog")
 					.getBeginButton()
@@ -185,17 +190,15 @@ sap.ui.define(
 			_addNewAppointment: function (oAppointment) {
 				var oModel = this._oView.getModel(),
 					sPath =
-						"/appointments/" +
-						this._oView
-							.byId("selectDoctor")
-							.getSelectedIndex()
-							.toString();
+					"/reservations/" +
+					this._oView
+					.byId("selectDoctor")
+					.getSelectedIndex()
+					.toString();
 				sPath += "/appointments";
-				let oPersonAppointments = oModel.getProperty(sPath);
-				console.log(sPath);
-				console.log(oPersonAppointments);
-				oPersonAppointments.push(oAppointment);
-				oModel.setProperty(sPath, oPersonAppointments);
+				let oDoctorAppointments = oModel.getProperty(sPath);
+				oDoctorAppointments.push(oAppointment);
+				oModel.setProperty(sPath, oDoctorAppointments);
 			},
 
 			onSaveButton: function () {
@@ -206,43 +209,68 @@ sap.ui.define(
 					oEndDate = this._oView.byId("endDate"),
 					sProcedure = this._oView.byId("inputProcedure").getValue(),
 					sPatientName = this._oView
-						.byId("inputPatientName")
-						.getValue(),
+					.byId("inputPatientName")
+					.getValue(),
 					iDoctorId = this._oView
-						.byId("selectDoctor")
-						.getSelectedIndex(),
+					.byId("selectDoctor")
+					.getSelectedIndex(),
 					oModel = this._oView.getModel(),
-					oNewAppointmentDialog = this._oView.byId("createDialog"),
+					oCreateDialog = this._oView.byId("createDialog"),
 					oNewAppointment;
 
-				if (
-					oStartDate.getValueState() !== ValueState.Error &&
-					oEndDate.getValueState() !== ValueState.Error
-				) {
-					if (
-						this.sPath &&
-						oNewAppointmentDialog._sDialogType ===
-							"edit_appointment"
-					) {
-						// this._editAppointment({
-						//     title: sInputTitle,
-						//     info: sInfoValue,
-						//     type: this.byId("detailsPopover").getBindingContext().getObject().type,
-						//     start: oStartDate.getDateValue(),
-						//     end: oEndDate.getDateValue()}, bIsIntervalAppointment, iPersonId, oNewAppointmentDialog);
-					} else {
-						oNewAppointment = {
-							patient_name: sPatientName,
+				if (this.sPath) {
+					this._editAppointment({
+							patientName: sPatientName,
 							procedure: sProcedure,
 							start: oStartDate.getDateValue(),
 							end: oEndDate.getDateValue(),
-						};
-						this._addNewAppointment(oNewAppointment);
-					}
-					oModel.updateBindings();
-					oNewAppointmentDialog.close();
+						},
+						iDoctorId,
+						oCreateDialog
+					);
+				} else {
+					oNewAppointment = {
+						patient_name: sPatientName,
+						procedure: sProcedure,
+						start: oStartDate.getDateValue(),
+						end: oEndDate.getDateValue(),
+					};
+					this._addNewAppointment(oNewAppointment);
 				}
+				oModel.updateBindings();
+				this._oView.byId("createDialog").close();
 			},
+
+			_editAppointment: function (oAppointment, iDoctorId, oCreateDialog) {
+				var sAppointmentPath = this._appointmentOwnerChange(oCreateDialog),
+					oModel = this._oView.getModel();
+
+				if (this.sPath !== sAppointmentPath) {
+                    this._addNewAppointment(oCreateDialog.getModel().getProperty(this.sPath));
+                    this._oView.oController.removeAppointment(oAppointment, this.sPath);
+				}
+
+				oModel.setProperty(sAppointmentPath + "/patient_name", oAppointment.patientName);
+				oModel.setProperty(sAppointmentPath + "/procedure", oAppointment.procedure);
+				oModel.setProperty(sAppointmentPath + "/start", oAppointment.start);
+				oModel.setProperty(sAppointmentPath + "/end", oAppointment.end);
+			},
+
+			_appointmentOwnerChange: function (oCreateDialog) {
+				var iSpathDoctorId = this.sPath[this.sPath.indexOf("/reservations/") + "/reservations/".length],
+					iSelectedDoctor = this._oView.byId("selectDoctor").getSelectedIndex(),
+					sTempPath = this.sPath,
+					iLastElementIndex = oCreateDialog.getModel().getProperty(
+						"/reservations/" + iSelectedDoctor.toString() + "/appointments/"
+					).length.toString();
+
+				if (iSpathDoctorId !== iSelectedDoctor.toString()) {
+					sTempPath = "".concat("/reservations/", iSelectedDoctor.toString(), "/appointments/", iLastElementIndex.toString());
+				}
+
+				return sTempPath;
+			},
+
 		});
 	}
 );

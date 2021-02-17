@@ -7,9 +7,9 @@
         <PlanningCalendar
                 id="PC1"
                 startDate="{path: '/startDate'}"
-                rows="{path: '/appointments'}"
+                rows="{path: '/reservations'}"
                 appointmentsVisualization="Filled"
-                appointmentSelect="handleAppointmentSelect"
+                appointmentSelect=".onSelectAppointment"
                 showEmptyIntervalHeaders="false"
                 intervalSelect="handleAppointmentAddWithContext">
             <toolbarContent>
@@ -36,8 +36,8 @@
                     </appointments>
                     <intervalHeaders>
                         <unified:CalendarAppointment
-                                startDate="{start}"
-                                endDate="{end}"
+                                startDate="{path: 'start', formatter:'.dateFormatter'}"
+                                endDate="{path: 'end', formatter:'.dateFormatter'}"
                                 icon="{pic}"
                                 title="{title}">
                         </unified:CalendarAppointment>
