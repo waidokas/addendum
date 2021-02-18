@@ -6,7 +6,7 @@
 			<pages>
 				<Page>
 					<headerContent>
-						<Button text="Reload Data" icon="sap-icon://refresh" press=".onRefreshClick" />
+						<Button text="{i18n>reloadData}" icon="sap-icon://refresh" press=".onRefreshClick" />
 					</headerContent>
 					<content>
 						<mvc:XMLView viewName="app.view.Calendar"/>

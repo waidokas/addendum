@@ -15,7 +15,7 @@ sap.ui.define(
 			 * Global data used in App
 			 */
 			_aDialogTypes: [{
-					title: "calendarCreateTitle",
+					title: "Create Appointment",
 					type: "create_appointment"
 				},
 				{
