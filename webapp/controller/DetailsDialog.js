@@ -59,20 +59,22 @@ sap.ui.define(
 			},
 
 			formatDate: function (s) {
-				let oDate = new Date(s);
-				if (oDate) {
-					var iHours = oDate.getHours(),
-						iMinutes = oDate.getMinutes(),
-						iSeconds = oDate.getSeconds();
+				if (s) {
+					let oDate = new Date(s);
+					if (oDate) {
+						var iHours = oDate.getHours(),
+							iMinutes = oDate.getMinutes(),
+							iSeconds = oDate.getSeconds();
 
-					if (iHours !== 0 || iMinutes !== 0 || iSeconds !== 0) {
-						return DateFormat.getDateTimeInstance({
-							style: "medium",
-						}).format(oDate);
-					} else {
-						return DateFormat.getDateInstance({
-							style: "medium",
-						}).format(oDate);
+						if (iHours !== 0 || iMinutes !== 0 || iSeconds !== 0) {
+							return DateFormat.getDateTimeInstance({
+								style: "medium",
+							}).format(oDate);
+						} else {
+							return DateFormat.getDateInstance({
+								style: "medium",
+							}).format(oDate);
+						}
 					}
 				}
 			},

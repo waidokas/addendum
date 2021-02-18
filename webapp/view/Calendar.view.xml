@@ -35,11 +35,7 @@
                         </unified:CalendarAppointment>
                     </appointments>
                     <intervalHeaders>
-                        <unified:CalendarAppointment
-                                startDate="{path: 'start', formatter:'.dateFormatter'}"
-                                endDate="{path: 'end', formatter:'.dateFormatter'}"
-                                icon="{pic}"
-                                title="{title}">
+                        <unified:CalendarAppointment>
                         </unified:CalendarAppointment>
                     </intervalHeaders>
                 </PlanningCalendarRow>

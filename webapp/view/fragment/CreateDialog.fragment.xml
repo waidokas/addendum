@@ -13,8 +13,9 @@
             <Select id="selectDoctor" forceSelection="false"  width="100%" items="{
                         path: '/reservations'
                     }">
-                <core:Item key="{name}" text="{name}"/>
+                <core:Item key="{id}" text="{name}"/>
             </Select>
+            <Input id="inputAppId" visible="false" />
             <Label text="Patient Name: " labelFor="inputPatientName" class="sapUiNoContentPadding"/>
             <Input id="inputPatientName" required="true" change=".onChangeInput" />
             <Label text="Procedure: " labelFor="inputProcedure"/>

@@ -4,8 +4,9 @@ sap.ui.define(
 		"sap/ui/model/json/JSONModel",
 		"./CreateDialog",
 		"./DetailsDialog",
+		"../util/apiCalls"
 	],
-	function (Controller, JSONModel, CreateDialog, DetailsDialog) {
+	function (Controller, JSONModel, CreateDialog, DetailsDialog, apiCalls) {
 		"use strict";
 
 		return Controller.extend("app.controller.Calendar", {
@@ -26,9 +27,16 @@ sap.ui.define(
 				/**
 				 * Get data and set model
 				 */
-				var oModel = new JSONModel("model/reservations.json");
+				var oModel = new JSONModel();
+				oModel.loadData('http://localhost:3000/appointments');
 				oModel.attachRequestCompleted(function () {
 					var reservations = oModel.getData();
+					// reservations.forEach(reservation => {
+					// 	reservation.appointments.forEach(appnt => {
+					// 		appnt.start = new Date(appnt.start)
+					// 		appnt.end = new Date(appnt.end)
+					// 	});
+					// });
 					oModel.setData({
 						startDate: new Date(),
 						reservations,
@@ -78,18 +86,31 @@ sap.ui.define(
 					aDoctorAppointments,
 					iIndexForRemoval;
 
-				if (!sDoctorId) {
-					sTempPath = sPath.slice(0, sPath.indexOf("appointments/") + "appointments/".length);
-				} else {
+				if (sDoctorId) {
 					sTempPath = "/reservations/" + sDoctorId + "/appointments";
+				} else {
+					sTempPath = sPath.slice(0, sPath.indexOf("appointments/") + "appointments/".length);
+				}
+				aDoctorAppointments = oModel.getProperty(sTempPath);
+				//iIndexForRemoval = aDoctorAppointments.indexOf(oAppointment);
+				if (sDoctorId) {
+					iIndexForRemoval = aDoctorAppointments.findIndex(i => {
+						return i.id === oAppointment.id
+						// return (JSON.stringify(i.end) === JSON.stringify(oAppointment.end) &&
+						// 	JSON.stringify(i.start) === JSON.stringify(oAppointment.start) &&
+						// 	i.patient_name === oAppointment.patient_name &&
+						// 	i.procedure === oAppointment.procedure)
+					});
+				} else {
+					iIndexForRemoval = sPath.substring(sPath.lastIndexOf('/') + 1);
 				}
 
-				aDoctorAppointments = oModel.getProperty(sTempPath);
-				iIndexForRemoval = aDoctorAppointments.indexOf(oAppointment);
 				if (iIndexForRemoval !== -1) {
 					aDoctorAppointments.splice(iIndexForRemoval, 1);
 				}
 				oModel.setProperty(sTempPath, aDoctorAppointments);
+
+				apiCalls.removeAppointment(oAppointment.id);
 			},
 
 		});

@@ -3,10 +3,10 @@ sap.ui.define(
 		"sap/ui/base/ManagedObject",
 		"sap/ui/core/library",
 		"sap/ui/core/Fragment",
-        "sap/base/Log",
-        "sap/ui/core/format/DateFormat",
+		"sap/base/Log",
+		"../util/apiCalls"
 	],
-	function (ManagedObject, coreLibrary, Fragment, Log, DateFormat) {
+	function (ManagedObject, coreLibrary, Fragment, Log, apiCalls) {
 		"use strict";
 
 		var ValueState = coreLibrary.ValueState;
@@ -87,6 +87,7 @@ sap.ui.define(
 					sSelectedIntervalEnd = oAppointment.end,
 					sProcedure = oAppointment.procedure,
 					sPatientName = oAppointment.patient_name,
+					iAppId = oAppointment.id,
 					iSelectedDoctorId = this.sPath[
 						this.sPath.indexOf("/appointmnetns/") +
 						"/appointmnetns/".length
@@ -95,13 +96,15 @@ sap.ui.define(
 					oStartDate = this._oView.byId("startDate"),
 					oEndDate = this._oView.byId("endDate"),
 					oProcedureInput = this._oView.byId("inputProcedure"),
-					oPatientNameInput = this._oView.byId("inputPatientName");
+					oPatientNameInput = this._oView.byId("inputPatientName"),
+					oAppIdInput = this._oView.byId("inputAppId");
 
 				oDoctorSelected.setSelectedIndex(iSelectedDoctorId);
 				oStartDate.setDateValue(new Date(sSelectedIntervalStart));
 				oEndDate.setDateValue(new Date(sSelectedIntervalEnd));
 				oProcedureInput.setValue(sProcedure);
 				oPatientNameInput.setValue(sPatientName);
+				oAppIdInput.setValue(iAppId);
 
 				oStartDate.setValueState(ValueState.None);
 				oEndDate.setValueState(ValueState.None);
@@ -196,9 +199,21 @@ sap.ui.define(
 					.getSelectedIndex()
 					.toString();
 				sPath += "/appointments";
+				/**
+				 * Add appointment to DB
+				 */
+				apiCalls.addAppointment(oAppointment, this._oView.byId("selectDoctor").getSelectedKey());
+				/**
+				 * Reflect it in the model
+				 */
 				let oDoctorAppointments = oModel.getProperty(sPath);
-				oDoctorAppointments.push(oAppointment);
+				if (oDoctorAppointments) {
+					oDoctorAppointments.push(oAppointment);
+				} else {
+					oDoctorAppointments = [oAppointment];
+				}
 				oModel.setProperty(sPath, oDoctorAppointments);
+
 			},
 
 			onSaveButton: function () {
@@ -208,19 +223,17 @@ sap.ui.define(
 				var oStartDate = this._oView.byId("startDate"),
 					oEndDate = this._oView.byId("endDate"),
 					sProcedure = this._oView.byId("inputProcedure").getValue(),
-					sPatientName = this._oView
-					.byId("inputPatientName")
-					.getValue(),
-					iDoctorId = this._oView
-					.byId("selectDoctor")
-					.getSelectedIndex(),
+					sPatientName = this._oView.byId("inputPatientName").getValue(),
+					iAppId = this._oView.byId("inputAppId").getValue(),
+					iDoctorId = this._oView.byId("selectDoctor").getSelectedIndex(),
 					oModel = this._oView.getModel(),
 					oCreateDialog = this._oView.byId("createDialog"),
 					oNewAppointment;
 
-				if (this.sPath) {
+				if (this.sPath && oCreateDialog._oDialogType.type === 'edit_appointment') {
 					this._editAppointment({
-							patientName: sPatientName,
+							id: iAppId,
+							patient_name: sPatientName,
 							procedure: sProcedure,
 							start: oStartDate.getDateValue(),
 							end: oEndDate.getDateValue(),
@@ -230,10 +243,11 @@ sap.ui.define(
 					);
 				} else {
 					oNewAppointment = {
+						id: iAppId,
 						patient_name: sPatientName,
 						procedure: sProcedure,
-						start: oStartDate.getDateValue(),
-						end: oEndDate.getDateValue(),
+						start: new Date(oStartDate.getDateValue()),
+						end: new Date(oEndDate.getDateValue()),
 					};
 					this._addNewAppointment(oNewAppointment);
 				}
@@ -246,14 +260,17 @@ sap.ui.define(
 					oModel = this._oView.getModel();
 
 				if (this.sPath !== sAppointmentPath) {
-                    this._addNewAppointment(oCreateDialog.getModel().getProperty(this.sPath));
-                    this._oView.oController.removeAppointment(oAppointment, this.sPath);
+					this._addNewAppointment(oAppointment);
+					this._oView.oController.removeAppointment(oCreateDialog.getModel().getProperty(this.sPath), this.sPath);
 				}
 
-				oModel.setProperty(sAppointmentPath + "/patient_name", oAppointment.patientName);
+				oModel.setProperty(sAppointmentPath + "/id", oAppointment.id);
+				oModel.setProperty(sAppointmentPath + "/patient_name", oAppointment.patient_name);
 				oModel.setProperty(sAppointmentPath + "/procedure", oAppointment.procedure);
 				oModel.setProperty(sAppointmentPath + "/start", oAppointment.start);
 				oModel.setProperty(sAppointmentPath + "/end", oAppointment.end);
+
+				apiCalls.updateAppointment(oAppointment);
 			},
 
 			_appointmentOwnerChange: function (oCreateDialog) {
