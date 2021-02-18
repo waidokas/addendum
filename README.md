@@ -37,13 +37,12 @@ Two docker images are used:
  
  To access admin panel please use: http://localhost:8888/
 
-pgAdmin username: `admin@email.com`
-pgAdmin password: `admin`
-DB login: `db_user`
-DB password: `db_password`
-Database name: `db_user`
-Data migration file: `addendum/webapp/api/migrations/createData.js` 
-Could be invoked by: http://localhost:3000/migrate  (caution: all previous data is destroyed)
+- pgAdmin username: `admin@email.com`
+- pgAdmin password: `admin`
+- DB login: `db_user`
+- DB password: `db_password`
+- Database name: `db_user`
+- Data migration file: `addendum/webapp/api/migrations/createData.js`. May be invoked by: http://localhost:3000/migrate  (caution: all previous data is destroyed)
 
 ## Back-End
 
