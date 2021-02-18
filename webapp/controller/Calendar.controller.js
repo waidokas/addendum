@@ -1,20 +1,21 @@
 sap.ui.define(
 	[
 		"sap/ui/core/mvc/Controller",
-		"sap/ui/model/json/JSONModel",
+		"sap/ui/core/EventBus",
 		"./CreateDialog",
 		"./DetailsDialog",
-		"../util/apiCalls"
+		"../util/ApiCalls"
 	],
-	function (Controller, JSONModel, CreateDialog, DetailsDialog, apiCalls) {
+	function (Controller, EventBus, CreateDialog, DetailsDialog, apiCalls) {
 		"use strict";
-
+	
 		return Controller.extend("app.controller.Calendar", {
+
 			/**
 			 * Global data used in App
 			 */
 			_aDialogTypes: [{
-					title: "Create Appointment",
+					title: "calendarCreateTitle",
 					type: "create_appointment"
 				},
 				{
@@ -24,29 +25,18 @@ sap.ui.define(
 			],
 
 			onInit: function () {
-				/**
-				 * Get data and set model
-				 */
-				var oModel = new JSONModel();
-				oModel.loadData('http://localhost:3000/appointments');
-				oModel.attachRequestCompleted(function () {
-					var reservations = oModel.getData();
-					// reservations.forEach(reservation => {
-					// 	reservation.appointments.forEach(appnt => {
-					// 		appnt.start = new Date(appnt.start)
-					// 		appnt.end = new Date(appnt.end)
-					// 	});
-					// });
-					oModel.setData({
-						startDate: new Date(),
-						reservations,
-					});
-				});
-				this.getView().setModel(oModel);
+				const bus = this.getOwnerComponent().getEventBus();
+				bus.subscribe("appChannel", "refreshDataEvent", this.setModel, this);
+				// Get data and set model
+				this.setModel()
 
 				// create dialogs
 				this._createDialog = new CreateDialog(this.oView);
 				this._detailsDialog = new DetailsDialog(this.oView);
+			},
+
+			setModel: function () {
+				this.getView().setModel(apiCalls.getModel());
 			},
 
 			exit: function () {
@@ -80,6 +70,10 @@ sap.ui.define(
 				this._detailsDialog.open(oAppointment);
 			},
 
+			/**
+			 * Used by both dialogs, that's why placed here
+			 * 
+			 */
 			removeAppointment: function (oAppointment, sPath, sDoctorId) {
 				var oModel = this.oView.getModel(),
 					sTempPath,
@@ -92,14 +86,9 @@ sap.ui.define(
 					sTempPath = sPath.slice(0, sPath.indexOf("appointments/") + "appointments/".length);
 				}
 				aDoctorAppointments = oModel.getProperty(sTempPath);
-				//iIndexForRemoval = aDoctorAppointments.indexOf(oAppointment);
 				if (sDoctorId) {
 					iIndexForRemoval = aDoctorAppointments.findIndex(i => {
 						return i.id === oAppointment.id
-						// return (JSON.stringify(i.end) === JSON.stringify(oAppointment.end) &&
-						// 	JSON.stringify(i.start) === JSON.stringify(oAppointment.start) &&
-						// 	i.patient_name === oAppointment.patient_name &&
-						// 	i.procedure === oAppointment.procedure)
 					});
 				} else {
 					iIndexForRemoval = sPath.substring(sPath.lastIndexOf('/') + 1);

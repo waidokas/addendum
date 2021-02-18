@@ -4,9 +4,10 @@ sap.ui.define(
 		"sap/ui/core/library",
 		"sap/ui/core/Fragment",
 		"sap/base/Log",
-		"../util/apiCalls"
+		"../util/ApiCalls",
+		"../util/Validation"
 	],
-	function (ManagedObject, coreLibrary, Fragment, Log, apiCalls) {
+	function (ManagedObject, coreLibrary, Fragment, Log, apiCalls, validation) {
 		"use strict";
 
 		var ValueState = coreLibrary.ValueState;
@@ -58,7 +59,7 @@ sap.ui.define(
 				}
 				oDialog.setTitle(oType.title);
 				oDialog.open();
-				this._updateButtonEnabledState();
+				validation.updateButtonEnabledState(this._oView);
 			},
 
 			_setCreateAppointmentDialogContent: function () {
@@ -114,80 +115,29 @@ sap.ui.define(
 				this._oView.byId("createDialog").close();
 			},
 
-			onChangeInput: function (oEvent) {
-				let val = oEvent.getParameter("newValue");
-				let inp = this._oView.byId(oEvent.getParameter("id"));
-				if (val.length < 3 || val.length > 50) {
-					inp.setValueState(ValueState.Error);
-					inp.setValueStateText(
-						"Input value is required to be between 3 and 50 characters"
-					);
-				} else {
-					inp.setValueState(ValueState.None);
-				}
+			onChangeSelect: function () {
+				validation.validateDateTimePickers(this._oView);
+				validation.updateButtonEnabledState(this._oView);
+			},
 
-				this._updateButtonEnabledState();
+			onChangePatientName: function () {
+				validation.validateInput(this._oView.byId('inputPatientName'));
+				validation.validateDateTimePickers(this._oView);
+				validation.updateButtonEnabledState(this._oView);
+			},
+
+			onChangeProcedure: function () {
+				validation.validateInput(this._oView.byId('inputProcedure'));
+				validation.updateButtonEnabledState(this._oView);
 			},
 
 			onChangeDTP: function (oEvent) {
-				var oDateTimePickerStart = this._oView.byId("startDate"),
-					oDateTimePickerEnd = this._oView.byId("endDate");
-
 				if (oEvent.getParameter("valid")) {
-					this._validateDateTimePicker(
-						oDateTimePickerStart,
-						oDateTimePickerEnd
-					);
+					validation.validateDateTimePickers(this._oView);
 				} else {
 					oEvent.getSource().setValueState(ValueState.Error);
 				}
-
-				this._updateButtonEnabledState();
-			},
-
-			_validateDateTimePicker: function (
-				oDateTimePickerStart,
-				oDateTimePickerEnd
-			) {
-				var oStartDate = oDateTimePickerStart.getDateValue(),
-					oEndDate = oDateTimePickerEnd.getDateValue(),
-					sValueStateText = "Start date should be before End date";
-
-				if (
-					oStartDate &&
-					oEndDate &&
-					oEndDate.getTime() <= oStartDate.getTime()
-				) {
-					oDateTimePickerStart.setValueState(ValueState.Error);
-					oDateTimePickerEnd.setValueState(ValueState.Error);
-					oDateTimePickerStart.setValueStateText(sValueStateText);
-					oDateTimePickerEnd.setValueStateText(sValueStateText);
-				} else {
-					oDateTimePickerStart.setValueState(ValueState.None);
-					oDateTimePickerEnd.setValueState(ValueState.None);
-				}
-			},
-
-			_updateButtonEnabledState: function () {
-				let oStartDate = this._oView.byId("startDate"),
-					oEndDate = this._oView.byId("endDate"),
-					oInputPatientName = this._oView.byId("inputPatientName"),
-					oInputProcedure = this._oView.byId("inputProcedure"),
-					bEnabled =
-					oStartDate.getValueState() !== ValueState.Error &&
-					oStartDate.getValue() !== "" &&
-					oEndDate.getValueState() !== ValueState.Error &&
-					oEndDate.getValue() !== "" &&
-					oInputPatientName.getValueState() !==
-					ValueState.Error &&
-					oInputPatientName.getValue() !== "" &&
-					oInputProcedure.getValueState() !== ValueState.Error &&
-					oInputProcedure.getValue() !== "";
-				this._oView
-					.byId("createDialog")
-					.getBeginButton()
-					.setEnabled(bEnabled);
-				return bEnabled;
+				validation.updateButtonEnabledState(this._oView);
 			},
 
 			_addNewAppointment: function (oAppointment) {
@@ -217,7 +167,7 @@ sap.ui.define(
 			},
 
 			onSaveButton: function () {
-				if (!this._updateButtonEnabledState()) {
+				if (!validation.updateButtonEnabledState(this._oView)) {
 					return;
 				}
 				var oStartDate = this._oView.byId("startDate"),

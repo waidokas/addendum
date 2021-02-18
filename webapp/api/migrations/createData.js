@@ -37,15 +37,15 @@ VALUES (
     ),
     (
         2,
-        'Jonas Koksas',
+        'Jonas Petrauskas',
         'Urologas',
-        'https://picsum.photos/id/2/100/100'
+        'https://picsum.photos/id/20/100/100'
     ),
     (
         3,
         'Petras Karulis',
         'Kardiologas',
-        'https://picsum.photos/id/3/100/100'
+        'https://picsum.photos/id/30/100/100'
     );
 INSERT INTO public.appointments (
         "start",
@@ -54,7 +54,11 @@ INSERT INTO public.appointments (
         "procedure",
         "doctor_id"
     )
-VALUES (now(), now() + '1 hour', 'John', 'regular', 1),
+VALUES 
+    (now(), now() + '1 hour', 'John', 'regular', 1),
+    (now() + '7 hour', now() + '9 hour', 'John1', 'special 1', 1),
+    (now() + '7 hour', now() + '9 hour', 'John2', 'special 2', 2),
+    (now() + '7 hour', now() + '9 hour', 'John3', 'regular 3', 3),
     (
         now() + '3 hour',
         now() + '4 hour',

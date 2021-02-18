@@ -11,15 +11,18 @@ const pool = new Pool({
 
 
 const test = (request, response) => {
-	pool.query('SELECT 1+1', (error, results) => {
+	pool.query('SELECT now()', (error, results) => {
 		if (error) {
 			throw error
 		}
-		response.status(200).json('all is fine!')
+		response.status(200).json(results.rows)
 	})
 }
 
 const getAppointments = (request, response) => {
+	/**
+	 * Return data beautifully formatted into JSON
+	 */
 	pool.query(`select 
 					doc.id, 
 					doc.name,
@@ -144,7 +147,7 @@ const migrate = (request, response) => {
 		if (error) {
 			throw error
 		}
-		response.status(200).json(results)
+		response.status(200).json("done")
 	})
 }
 
