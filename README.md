@@ -48,10 +48,6 @@ Could be invoked by: http://localhost:3000/migrate  (caution: all previous data 
 Managed by Express.js and resides under`api/` folder. 
 Routes are described in `data.js`, data manipulation functions in `db.js`.
 
-## I18N
-
-Supports LT and EN locales detected by browser settings. Translation file could be found in `i18n/`.
-
 
 ## Front-End
 
