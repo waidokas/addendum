@@ -32,8 +32,10 @@ There is a possibility to make appointments for each doctor's patients. The syst
 
 Two docker images are used:
 
- 1. Database
- 2. pgAdmin. To access admin panel please use: http://localhost:8888/
+ 1. `postgres`
+ 2. `dpage/pgadmin4`. 
+ 
+ To access admin panel please use: http://localhost:8888/
 
 pgAdmin username: `admin@email.com`
 pgAdmin password: `admin`
